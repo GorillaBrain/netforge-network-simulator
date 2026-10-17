@@ -1,0 +1,133 @@
+@import "tailwindcss";
+
+:root {
+  --bg-main: #090d16;
+  --bg-surface: #0f172a;
+  --bg-surface-elevated: #1e293b;
+  --border-color: #334155;
+  --border-focus: #38bdf8;
+  --text-main: #f8fafc;
+  --text-muted: #94a3b8;
+  --accent-cyan: #06b6d4;
+  --accent-blue: #3b82f6;
+  --accent-emerald: #10b981;
+  --accent-amber: #f59e0b;
+  --accent-rose: #f43f5e;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background-color: var(--bg-main);
+  color: var(--text-main);
+  overflow: hidden;
+  user-select: none;
+}
+
+code, kbd, samp, pre, .font-mono {
+  font-family: 'Fira Code', 'JetBrains Mono', Consolas, Monaco, monospace;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #0f172a;
+}
+::-webkit-scrollbar-thumb {
+  background: #334155;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #475569;
+}
+
+/* Blueprint Grid Canvas Background */
+.canvas-grid {
+  background-color: #0b1120;
+  background-image: 
+    radial-gradient(circle, rgba(56, 189, 248, 0.12) 1px, transparent 1px),
+    linear-gradient(to right, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+  background-size: 24px 24px, 120px 120px, 120px 120px;
+}
+
+/* Animated Flow on Virtual Links */
+@keyframes linkPulse {
+  from {
+    stroke-dashoffset: 40;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+.link-transmitting {
+  stroke-dasharray: 6 4;
+  animation: linkPulse 0.8s linear infinite;
+}
+
+.link-arp-broadcast {
+  stroke-dasharray: 8 6;
+  animation: linkPulse 0.5s linear infinite;
+  stroke: #f59e0b !important;
+}
+
+.link-icmp {
+  stroke-dasharray: 6 4;
+  animation: linkPulse 0.6s linear infinite;
+  stroke: #38bdf8 !important;
+}
+
+/* Terminal Cursor Blink */
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+.terminal-cursor {
+  display: inline-block;
+  width: 8px;
+  height: 15px;
+  background-color: #38bdf8;
+  margin-left: 2px;
+  vertical-align: middle;
+  animation: blink 1s infinite;
+}
+
+/* Glassmorphism Surface */
+.glass-panel {
+  background: rgba(15, 23, 42, 0.85);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(51, 65, 85, 0.8);
+}
+
+.glass-dropdown {
+  background: rgba(15, 23, 42, 0.95);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(56, 189, 248, 0.3);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.5);
+}
+
+/* Device node selection ring */
+.device-selected {
+  outline: 2px solid #38bdf8;
+  outline-offset: 4px;
+  box-shadow: 0 0 15px rgba(56, 189, 248, 0.4);
+}
+
+/* Status Indicator Dot */
+.dot-online {
+  box-shadow: 0 0 8px #10b981;
+}
+
+.dot-offline {
+  box-shadow: 0 0 8px #f43f5e;
+}
