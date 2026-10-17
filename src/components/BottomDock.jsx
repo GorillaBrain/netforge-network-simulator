@@ -3,9 +3,11 @@ import {
   Terminal as TerminalIcon, Activity, Search, Calculator, 
   BookOpen, Play, Pause, SkipForward, RotateCcw, ChevronUp, 
   ChevronDown, CheckCircle2, AlertCircle, XCircle, Info, 
-  Sparkles, Layers, ShieldCheck, ArrowRight, CornerDownLeft
+  Sparkles, Layers, ShieldCheck, ArrowRight, CornerDownLeft, Zap
 } from 'lucide-react';
 import confetti from 'canvas-confetti';
+import { sound } from '../utils/soundEffects.js';
+import { gamification } from '../utils/gamification.js';
 
 export default function BottomDock({
   topology,
@@ -31,7 +33,7 @@ export default function BottomDock({
   onSelectLab
 }) {
   const [activeTab, setActiveTab] = useState('terminal'); // 'terminal', 'events', 'inspector', 'subnet', 'labs'
-  const [isMinimized, setIsMinimized] = useState(false);
+  const [isMinimized, setIsMinimized] = useState(true);
   const [cliInput, setCliInput] = useState('');
   const [historyIndex, setHistoryIndex] = useState(-1);
   const [localHistory, setLocalHistory] = useState([]);
@@ -133,7 +135,10 @@ export default function BottomDock({
   const handleCliSubmit = (e) => {
     e.preventDefault();
     if (!cliInput.trim()) return;
+    sound.playClick();
     onRunCliCommand(cliInput.trim());
+    gamification.addXp(20, `Executed: ${cliInput.trim().slice(0, 15)}`);
+    gamification.unlockAchievement('cisco_ninja');
     setLocalHistory(prev => [...prev, cliInput.trim()]);
     setHistoryIndex(-1);
     setCliInput('');
@@ -370,6 +375,36 @@ export default function BottomDock({
                   </div>
                 ))}
                 <div ref={terminalEndRef} />
+              </div>
+
+              {/* Quick Action Command Chips */}
+              <div className="h-7 border-t border-slate-800/80 px-3 flex items-center space-x-1.5 bg-slate-900/50 overflow-x-auto text-[10px]">
+                <span className="text-slate-500 font-mono text-[9px] uppercase tracking-wider flex-shrink-0">
+                  QUICK RUN:
+                </span>
+                {[
+                  'ping 192.168.1.20',
+                  'show ip',
+                  'show interfaces',
+                  'show arp',
+                  'show mac',
+                  'show ip route',
+                  'conf t'
+                ].map(cmd => (
+                  <button
+                    key={cmd}
+                    type="button"
+                    onClick={() => {
+                      sound.playClick();
+                      onRunCliCommand(cmd);
+                      gamification.addXp(15, `Executed: ${cmd}`);
+                      gamification.unlockAchievement('cisco_ninja');
+                    }}
+                    className="px-2 py-0.5 rounded bg-slate-800/90 hover:bg-cyan-950 hover:text-cyan-300 text-slate-300 font-mono transition border border-slate-700/60 whitespace-nowrap flex-shrink-0"
+                  >
+                    {cmd}
+                  </button>
+                ))}
               </div>
 
               {/* CLI Input Form */}

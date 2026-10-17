@@ -7,7 +7,10 @@ import LinkInspector from './components/LinkInspector.jsx';
 import BottomDock from './components/BottomDock.jsx';
 import QuickPingModal from './components/QuickPingModal.jsx';
 import HelpModal from './components/HelpModal.jsx';
+import AchievementsModal from './components/AchievementsModal.jsx';
 import { engineBridge } from './engine/engineBridge.js';
+import { sound } from './utils/soundEffects.js';
+import { gamification } from './utils/gamification.js';
 
 export default function App() {
   const [topology, setTopology] = useState(null);
@@ -27,10 +30,12 @@ export default function App() {
   const [isConnecting, setIsConnecting] = useState(false);
   const [connectingSource, setConnectingSource] = useState(null);
 
-  // Modals
+  // Modals & Gamification
   const [isQuickPingOpen, setIsQuickPingOpen] = useState(false);
   const [isHelpOpen, setIsHelpOpen] = useState(false);
+  const [isAchievementsOpen, setIsAchievementsOpen] = useState(false);
   const [validationResult, setValidationResult] = useState(null);
+  const [toasts, setToasts] = useState([]);
 
   // Terminal CLI
   const [cliOutput, setCliOutput] = useState([
@@ -50,6 +55,27 @@ export default function App() {
     const unsub = engineBridge.onStatusChange((status, msg) => {
       setEngineStatus(status);
       setEngineMessage(msg);
+    });
+    return unsub;
+  }, []);
+
+  // Subscribe to gamification events
+  useEffect(() => {
+    const unsub = gamification.subscribe((event) => {
+      if (event.type === 'XP_GAINED') {
+        const id = Date.now() + Math.random();
+        setToasts(prev => [...prev.slice(-3), { id, text: `+${event.amount} XP: ${event.reason}`, type: 'xp' }]);
+        setTimeout(() => {
+          setToasts(prev => prev.filter(t => t.id !== id));
+        }, 2500);
+      } else if (event.type === 'ACHIEVEMENT_UNLOCKED') {
+        sound.playLevelUp();
+        const id = Date.now() + Math.random();
+        setToasts(prev => [...prev.slice(-3), { id, text: `🏆 Unlocked: ${event.achievement.title}!`, type: 'ach' }]);
+        setTimeout(() => {
+          setToasts(prev => prev.filter(t => t.id !== id));
+        }, 3500);
+      }
     });
     return unsub;
   }, []);
@@ -326,6 +352,9 @@ export default function App() {
     setIsConnecting(false);
     setConnectingSource(null);
     setSelectedLinkId(linkId);
+    sound.playCableConnect();
+    gamification.unlockAchievement('first_link');
+    gamification.addXp(50, 'Connected virtual cable');
   };
 
   const handleUpdateLink = (updatedLink) => {
@@ -375,6 +404,7 @@ export default function App() {
   const handleSendPing = async (sourceId, targetIp, count = 4) => {
     if (!topology) return;
     try {
+      sound.playPacketLaunch();
       setCliOutput(prev => [
         ...prev,
         { command: `ping ${targetIp}`, prompt: currentCliPrompt }
@@ -392,6 +422,22 @@ export default function App() {
 
       // Format ping output in terminal
       const successCount = res.events?.filter(e => e.event_type === 'PING_SUCCESS').length || 0;
+      if (successCount > 0) {
+        sound.playPingSuccess();
+        gamification.unlockAchievement('first_ping');
+        gamification.addXp(100, `Delivered ICMP Echo to ${targetIp}`);
+      } else {
+        sound.playPacketDrop();
+      }
+
+      // Check for ARP or routing events
+      if (res.events?.some(e => e.event_type?.includes('ARP'))) {
+        gamification.unlockAchievement('arp_discovered');
+      }
+      if (res.events?.some(e => e.event_type?.includes('ROUTER') || e.event_type?.includes('ROUTE'))) {
+        gamification.unlockAchievement('router_cross');
+      }
+
       const textOutput = [
         `Pinging ${targetIp} with 32 bytes of data:`,
         ...Array(successCount).fill(`Reply from ${targetIp}: bytes=32 time=1ms TTL=64`),
@@ -406,8 +452,13 @@ export default function App() {
       if (selectedLabId && selectedLabId !== 'custom') {
         const evalRes = await engineBridge.evaluateLab(selectedLabId, res.topology || topology);
         setLabEvaluation(evalRes);
+        if (evalRes?.completed) {
+          sound.playMissionComplete();
+          gamification.completeMission(selectedLabId);
+        }
       }
     } catch (err) {
+      sound.playPacketDrop();
       setCliOutput(prev => [...prev, { text: `% Error originating ping: ${err.message}` }]);
     }
   };
@@ -512,7 +563,7 @@ export default function App() {
         onImportTopology={handleImportTopology}
         onOpenQuickPing={() => setIsQuickPingOpen(true)}
         onOpenSubnetCalc={() => {
-          // Bottom dock switch to subnet
+          gamification.unlockAchievement('subnet_master');
         }}
         onOpenHelp={() => setIsHelpOpen(true)}
         onSelectLab={handleSelectLab}
@@ -521,11 +572,12 @@ export default function App() {
         engineMessage={engineMessage}
         onValidateTopology={handleValidateTopology}
         validationResult={validationResult}
+        onOpenAchievements={() => setIsAchievementsOpen(true)}
       />
 
       {/* Main Workspace (Palette + Canvas + Config Panel) */}
       <div className="flex flex-1 overflow-hidden relative">
-        <Palette onAddDevice={(type) => handleAddDeviceAtPosition(type, 240, 180)} />
+        <Palette onAddDevice={(type) => handleAddDeviceAtPosition(type, 260, 200)} />
 
         <Canvas
           topology={topology}
@@ -547,6 +599,17 @@ export default function App() {
           connectingSource={connectingSource}
           onCancelConnecting={handleCancelConnecting}
           onStartConnecting={handleStartConnecting}
+          onOpenQuickPing={() => setIsQuickPingOpen(true)}
+          isPlaying={isPlaying}
+          onPlay={() => setIsPlaying(true)}
+          onPause={() => setIsPlaying(false)}
+          onStepForward={() => setActiveEventIndex(prev => Math.min(events.length - 1, prev + 1))}
+          onStepBackward={() => setActiveEventIndex(prev => Math.max(0, prev - 1))}
+          playbackSpeed={playbackSpeed}
+          onChangeSpeed={setPlaybackSpeed}
+          selectedLab={labList.find(l => l.id === selectedLabId)}
+          labEvaluation={labEvaluation}
+          onOpenTerminal={() => {}}
         />
 
         {/* Right Inspector Panel */}
@@ -615,6 +678,30 @@ export default function App() {
       {isHelpOpen && (
         <HelpModal onClose={() => setIsHelpOpen(false)} />
       )}
+
+      {/* Operator Achievements & Profile Modal */}
+      {isAchievementsOpen && (
+        <AchievementsModal
+          isOpen={isAchievementsOpen}
+          onClose={() => setIsAchievementsOpen(false)}
+        />
+      )}
+
+      {/* Floating Gamification XP Toasts */}
+      <div className="fixed top-16 right-6 z-50 flex flex-col space-y-2 pointer-events-none">
+        {toasts.map(t => (
+          <div
+            key={t.id}
+            className={`xp-floater px-3.5 py-2 rounded-xl text-xs font-mono font-bold shadow-2xl flex items-center space-x-2 border ${
+              t.type === 'ach' 
+                ? 'bg-amber-950/95 text-amber-200 border-amber-500/80 shadow-amber-900/30' 
+                : 'bg-cyan-950/95 text-cyan-200 border-cyan-400/80 shadow-cyan-900/30'
+            }`}
+          >
+            <span>{t.text}</span>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
