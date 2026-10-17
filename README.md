@@ -73,17 +73,17 @@ sequenceDiagram
     participant Switch as Switch1
     participant HostB as PC2 (192.168.1.20)
 
-    HostA->>HostA: User runs `ping 192.168.1.20`
-    Note over HostA: Same subnet (/24).<br/>ARP cache miss for 192.168.1.20.<br/>Buffers ICMP packet; sends broadcast ARP Request.
-    HostA->>Switch: Ethernet Broadcast: Who has 192.168.1.20?
-    Note over Switch: Learns PC1 MAC on port Fa0/1.<br/>Floods broadcast out port Fa0/2.
+    HostA->>HostA: User runs ping 192.168.1.20
+    Note over HostA: Same subnet (/24)<br/>ARP cache miss for 192.168.1.20<br/>Buffers ICMP packet, sends broadcast ARP Request
+    HostA->>Switch: Ethernet Broadcast (Who has 192.168.1.20?)
+    Note over Switch: Learns PC1 MAC on port Fa0/1<br/>Floods broadcast out port Fa0/2
     Switch->>HostB: ARP Request delivered
-    Note over HostB: Matches IP 192.168.1.20!<br/>Caches PC1 MAC; sends unicast ARP Reply.
+    Note over HostB: Matches IP 192.168.1.20<br/>Caches PC1 MAC, sends unicast ARP Reply
     HostB->>Switch: Unicast ARP Reply (192.168.1.20 is at PC2_MAC)
-    Note over Switch: Learns PC2 MAC on port Fa0/2.<br/>Unicast-forwards to learned port Fa0/1.
+    Note over Switch: Learns PC2 MAC on port Fa0/2<br/>Unicast-forwards to learned port Fa0/1
     Switch->>HostA: ARP Reply delivered
-    Note over HostA: Caches PC2 MAC.<br/>Releases buffered ICMP packet!
-    HostA->>Switch: ICMP Echo Request (Dst: PC2_MAC)
+    Note over HostA: Caches PC2 MAC<br/>Releases buffered ICMP packet
+    HostA->>Switch: ICMP Echo Request (Dst PC2_MAC)
     Switch->>HostB: Unicast forward to Fa0/2
     HostB->>Switch: ICMP Echo Reply
     Switch->>HostA: Unicast forward to Fa0/1
