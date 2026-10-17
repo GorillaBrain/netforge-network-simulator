@@ -1,10 +1,13 @@
 # NetForge — Interactive Network Simulator
 
 [![CI / Pytest](https://img.shields.io/badge/pytest-28%20passed-emerald?style=for-the-badge&logo=pytest)](https://github.com/GorillaBrain/netforge-network-simulator)
+[![Deployment: Vercel](https://img.shields.io/badge/Vercel-Live%20Production-success?style=for-the-badge&logo=vercel)](https://netforge-network-simulator.vercel.app)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue?style=for-the-badge)](LICENSE)
 [![Engine: Python 3](https://img.shields.io/badge/Engine-Python%203.13%20%7C%20Pyodide%20Wasm-cyan?style=for-the-badge&logo=python)](https://github.com/GorillaBrain/netforge-network-simulator)
 [![Frontend: React](https://img.shields.io/badge/Frontend-React%20%2B%20Vite-indigo?style=for-the-badge&logo=react)](https://github.com/GorillaBrain/netforge-network-simulator)
 
+> **Live Deployment:** [https://netforge-network-simulator.vercel.app](https://netforge-network-simulator.vercel.app)
+> 
 > A polished, interactive, educational network simulator inspired by **Cisco Packet Tracer**. Build virtual network topologies, configure devices, simulate packets step-by-step, inspect protocol headers, troubleshoot connectivity, and learn networking through observable simulation.
 
 ---

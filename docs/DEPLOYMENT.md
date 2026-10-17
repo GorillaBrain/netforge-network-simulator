@@ -2,6 +2,10 @@
 
 NetForge is architected to be 100% free and open-source, deployable without requiring paid databases, cloud accounts with credit cards, or external proprietary APIs.
 
+- **Production URL:** [https://netforge-network-simulator.vercel.app](https://netforge-network-simulator.vercel.app)
+- **Deployment URL:** [https://netforge-network-simulator-ggq4ebr4u-project-4d49.vercel.app](https://netforge-network-simulator-ggq4ebr4u-project-4d49.vercel.app)
+- **GitHub Repository:** [https://github.com/GorillaBrain/netforge-network-simulator](https://github.com/GorillaBrain/netforge-network-simulator)
+
 ---
 
 ## 1. Hosting Architecture on Vercel
