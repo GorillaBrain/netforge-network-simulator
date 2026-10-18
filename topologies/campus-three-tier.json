@@ -1,0 +1,155 @@
+{
+  "name": "Cisco 3-Tier Campus Network (Core, Dist, Access)",
+  "description": "Standard hierarchical enterprise campus design with Core Router, Distribution Switch, and Access layer connecting PCs, Laptops, and DNS Server.",
+  "devices": {
+    "core_r1": {
+      "id": "core_r1",
+      "name": "Core-Gateway-2911",
+      "device_type": "router",
+      "x": 500,
+      "y": 100,
+      "interfaces": {
+        "Gi0/0": { "name": "Gi0/0", "mac_address": "00:AA:11:00:00:01", "ip_address": "172.16.1.1", "subnet_mask": "255.255.255.0", "admin_up": true, "link_id": "l_core_dist1" },
+        "Gi0/1": { "name": "Gi0/1", "mac_address": "00:AA:11:00:00:02", "ip_address": "172.16.2.1", "subnet_mask": "255.255.255.0", "admin_up": true, "link_id": "l_core_srv" }
+      },
+      "static_routes": [
+        { "network": "172.16.1.0", "mask": "255.255.255.0", "next_hop": "172.16.1.1" },
+        { "network": "172.16.2.0", "mask": "255.255.255.0", "next_hop": "172.16.2.1" }
+      ],
+      "arp_cache": [],
+      "security": { "acl": [], "rateLimit": false, "wafDpi": false, "daiGuard": false }
+    },
+    "dns_srv": {
+      "id": "dns_srv",
+      "name": "Campus-DNS-Server",
+      "device_type": "server",
+      "x": 750,
+      "y": 100,
+      "default_gateway": "172.16.2.1",
+      "interfaces": {
+        "eth0": { "name": "eth0", "mac_address": "00:50:79:AA:02:53", "ip_address": "172.16.2.53", "subnet_mask": "255.255.255.0", "admin_up": true, "link_id": "l_core_srv" }
+      },
+      "arp_cache": [],
+      "security": { "acl": [], "rateLimit": false, "wafDpi": false, "daiGuard": false }
+    },
+    "dist_sw1": {
+      "id": "dist_sw1",
+      "name": "Dist-Switch-3560",
+      "device_type": "switch",
+      "x": 500,
+      "y": 230,
+      "interfaces": {
+        "Gi0/1": { "name": "Gi0/1", "mac_address": "00:01:42:DD:00:01", "ip_address": null, "subnet_mask": null, "admin_up": true, "link_id": "l_core_dist1" },
+        "Fa0/1": { "name": "Fa0/1", "mac_address": "00:01:42:DD:00:11", "ip_address": null, "subnet_mask": null, "admin_up": true, "link_id": "l_dist_acc1" },
+        "Fa0/2": { "name": "Fa0/2", "mac_address": "00:01:42:DD:00:12", "ip_address": null, "subnet_mask": null, "admin_up": true, "link_id": "l_dist_acc2" }
+      },
+      "mac_table": [],
+      "arp_cache": [],
+      "security": { "acl": [], "rateLimit": false, "wafDpi": false, "daiGuard": true }
+    },
+    "acc_sw1": {
+      "id": "acc_sw1",
+      "name": "Access-Switch-East",
+      "device_type": "switch",
+      "x": 300,
+      "y": 340,
+      "interfaces": {
+        "Fa0/24": { "name": "Fa0/24", "mac_address": "00:01:42:EE:00:24", "ip_address": null, "subnet_mask": null, "admin_up": true, "link_id": "l_dist_acc1" },
+        "Fa0/1": { "name": "Fa0/1", "mac_address": "00:01:42:EE:00:01", "ip_address": null, "subnet_mask": null, "admin_up": true, "link_id": "l_acc1_pc1" }
+      },
+      "mac_table": [],
+      "arp_cache": [],
+      "security": { "acl": [], "rateLimit": false, "wafDpi": false, "daiGuard": false }
+    },
+    "acc_sw2": {
+      "id": "acc_sw2",
+      "name": "Access-Switch-West",
+      "device_type": "switch",
+      "x": 700,
+      "y": 340,
+      "interfaces": {
+        "Fa0/24": { "name": "Fa0/24", "mac_address": "00:01:42:FF:00:24", "ip_address": null, "subnet_mask": null, "admin_up": true, "link_id": "l_dist_acc2" },
+        "Fa0/1": { "name": "Fa0/1", "mac_address": "00:01:42:FF:00:01", "ip_address": null, "subnet_mask": null, "admin_up": true, "link_id": "l_acc2_laptop" }
+      },
+      "mac_table": [],
+      "arp_cache": [],
+      "security": { "acl": [], "rateLimit": false, "wafDpi": false, "daiGuard": false }
+    },
+    "pc_eng": {
+      "id": "pc_eng",
+      "name": "Engineering-PC",
+      "device_type": "pc",
+      "x": 180,
+      "y": 340,
+      "default_gateway": "172.16.1.1",
+      "interfaces": {
+        "eth0": { "name": "eth0", "mac_address": "00:50:79:EE:01:10", "ip_address": "172.16.1.10", "subnet_mask": "255.255.255.0", "admin_up": true, "link_id": "l_acc1_pc1" }
+      },
+      "arp_cache": [],
+      "security": { "acl": [], "rateLimit": false, "wafDpi": false, "daiGuard": false }
+    },
+    "laptop_exec": {
+      "id": "laptop_exec",
+      "name": "Executive-Laptop",
+      "device_type": "laptop",
+      "x": 840,
+      "y": 340,
+      "default_gateway": "172.16.1.1",
+      "interfaces": {
+        "eth0": { "name": "eth0", "mac_address": "00:50:79:FF:01:20", "ip_address": "172.16.1.20", "subnet_mask": "255.255.255.0", "admin_up": true, "link_id": "l_acc2_laptop" }
+      },
+      "arp_cache": [],
+      "security": { "acl": [], "rateLimit": false, "wafDpi": false, "daiGuard": false }
+    }
+  },
+  "links": {
+    "l_core_dist1": {
+      "id": "l_core_dist1",
+      "device_a_id": "core_r1",
+      "interface_a_name": "Gi0/0",
+      "device_b_id": "dist_sw1",
+      "interface_b_name": "Gi0/1",
+      "is_up": true
+    },
+    "l_core_srv": {
+      "id": "l_core_srv",
+      "device_a_id": "core_r1",
+      "interface_a_name": "Gi0/1",
+      "device_b_id": "dns_srv",
+      "interface_b_name": "eth0",
+      "is_up": true
+    },
+    "l_dist_acc1": {
+      "id": "l_dist_acc1",
+      "device_a_id": "dist_sw1",
+      "interface_a_name": "Fa0/1",
+      "device_b_id": "acc_sw1",
+      "interface_b_name": "Fa0/24",
+      "is_up": true
+    },
+    "l_dist_acc2": {
+      "id": "l_dist_acc2",
+      "device_a_id": "dist_sw1",
+      "interface_a_name": "Fa0/2",
+      "device_b_id": "acc_sw2",
+      "interface_b_name": "Fa0/24",
+      "is_up": true
+    },
+    "l_acc1_pc1": {
+      "id": "l_acc1_pc1",
+      "device_a_id": "acc_sw1",
+      "interface_a_name": "Fa0/1",
+      "device_b_id": "pc_eng",
+      "interface_b_name": "eth0",
+      "is_up": true
+    },
+    "l_acc2_laptop": {
+      "id": "l_acc2_laptop",
+      "device_a_id": "acc_sw2",
+      "interface_a_name": "Fa0/1",
+      "device_b_id": "laptop_exec",
+      "interface_b_name": "eth0",
+      "is_up": true
+    }
+  }
+}

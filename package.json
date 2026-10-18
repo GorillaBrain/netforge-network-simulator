@@ -1,28 +1,18 @@
 {
   "name": "netforge-network-simulator",
-  "version": "1.0.0",
+  "version": "3.0.0",
   "private": true,
-  "description": "NetForge — Interactive Educational Network Simulator inspired by Cisco Packet Tracer",
+  "description": "NetForge: Cyber Defense — Gamified Network & Security Simulator inspired by Cisco Packet Tracer",
   "type": "module",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
+    "validate": "node scripts/validate_topologies.js",
     "test:py": "pytest -v",
-    "test": "pytest -v"
-  },
-  "dependencies": {
-    "canvas-confetti": "^1.9.4",
-    "lucide-react": "^1.16.0",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "test": "pytest -v && node scripts/validate_topologies.js"
   },
   "devDependencies": {
-    "@tailwindcss/vite": "^4.3.3",
-    "@vitejs/plugin-react": "^4.3.4",
-    "autoprefixer": "^10.6.1",
-    "postcss": "^8.5.30",
-    "tailwindcss": "^4.3.3",
     "vite": "^6.2.0"
   }
 }

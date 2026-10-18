@@ -216,7 +216,9 @@
 
     <!-- Right Export/Import & Help -->
     <div class="flex items-center space-x-1.5 shrink-0">
-      <button id="btnExportJson" class="px-2 py-1 rounded text-[11px] font-mono text-slate-400 hover:text-white hover:bg-slate-800 transition cursor-pointer" title="Download Topology JSON">⬇ JSON</button>
+      <button id="btnExportJson" class="px-2 py-1 rounded text-[11px] font-mono text-slate-400 hover:text-white hover:bg-slate-800 transition cursor-pointer" title="Download Topology JSON">⬇ Export</button>
+      <button id="btnImportJson" class="px-2 py-1 rounded text-[11px] font-mono text-slate-400 hover:text-white hover:bg-slate-800 transition cursor-pointer" title="Load Custom Topology JSON">⬆ Import</button>
+      <input type="file" id="fileImportJson" accept=".json" class="hidden" />
       <button id="btnOpenHelp" class="px-2 py-1 rounded text-[11px] font-mono text-cyan-400 hover:bg-slate-800 border border-cyan-500/30 transition cursor-pointer">📖 Guide &amp; CLI</button>
     </div>
   </div>
@@ -3677,6 +3679,40 @@
         a.click();
         a.remove();
         spawnToast('Exported Topology JSON', 'cyan');
+      });
+
+      // Import JSON
+      const fileImportInput = document.getElementById('fileImportJson');
+      document.getElementById('btnImportJson').addEventListener('click', () => {
+        fileImportInput.value = '';
+        fileImportInput.click();
+      });
+      fileImportInput.addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = (evt) => {
+          try {
+            const parsed = JSON.parse(evt.target.result);
+            if (parsed.devices && parsed.links) {
+              topology = parsed;
+              currentMissionId = 'custom';
+              const banner = document.getElementById('missionBanner');
+              if (banner) banner.classList.add('hidden');
+              selectedDeviceId = Object.keys(topology.devices)[0] || null;
+              selectedIfaceName = selectedDeviceId && topology.devices[selectedDeviceId].interfaces ? Object.keys(topology.devices[selectedDeviceId].interfaces)[0] : null;
+              renderDevicesOverlay();
+              sound.playFanfare();
+              addXp(50, `Imported ${parsed.name || 'Custom Topology'}`);
+              spawnToast(`Loaded: ${parsed.name || 'Custom Topology'}`, 'cyan');
+            } else {
+              alert('Invalid topology format: JSON must contain "devices" and "links" objects.');
+            }
+          } catch (err) {
+            alert('Failed to parse topology JSON: ' + err.message);
+          }
+        };
+        reader.readAsText(file);
       });
 
       // Keyboard ESC to cancel active tool or close modals

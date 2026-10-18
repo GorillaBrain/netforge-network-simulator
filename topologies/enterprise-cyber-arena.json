@@ -1,0 +1,170 @@
+{
+  "name": "Enterprise Cyber Defense Arena (DMZ + Core)",
+  "description": "Multi-tier enterprise network featuring an Edge ASA Firewall, DMZ Web Server, Internal DB, Admin PC, and Kali Attacker.",
+  "devices": {
+    "admin_pc": {
+      "id": "admin_pc",
+      "name": "AdminWorkstation",
+      "device_type": "pc",
+      "x": 100,
+      "y": 140,
+      "default_gateway": "10.10.1.1",
+      "interfaces": {
+        "eth0": {
+          "name": "eth0",
+          "mac_address": "00:50:79:AA:01:10",
+          "ip_address": "10.10.1.10",
+          "subnet_mask": "255.255.255.0",
+          "admin_up": true,
+          "link_id": "l_admin_sw"
+        }
+      },
+      "arp_cache": [],
+      "security": { "acl": [], "rateLimit": false, "wafDpi": false, "daiGuard": false }
+    },
+    "finance_pc": {
+      "id": "finance_pc",
+      "name": "FinancePC",
+      "device_type": "laptop",
+      "x": 100,
+      "y": 280,
+      "default_gateway": "10.10.1.1",
+      "interfaces": {
+        "eth0": {
+          "name": "eth0",
+          "mac_address": "00:50:79:AA:01:20",
+          "ip_address": "10.10.1.20",
+          "subnet_mask": "255.255.255.0",
+          "admin_up": true,
+          "link_id": "l_fin_sw"
+        }
+      },
+      "arp_cache": [],
+      "security": { "acl": [], "rateLimit": false, "wafDpi": false, "daiGuard": false }
+    },
+    "sw_core": {
+      "id": "sw_core",
+      "name": "CoreSwitch-2960",
+      "device_type": "switch",
+      "x": 300,
+      "y": 210,
+      "interfaces": {
+        "Fa0/1": { "name": "Fa0/1", "mac_address": "00:01:42:AA:00:01", "ip_address": null, "subnet_mask": null, "admin_up": true, "link_id": "l_admin_sw" },
+        "Fa0/2": { "name": "Fa0/2", "mac_address": "00:01:42:AA:00:02", "ip_address": null, "subnet_mask": null, "admin_up": true, "link_id": "l_fin_sw" },
+        "Fa0/24": { "name": "Fa0/24", "mac_address": "00:01:42:AA:00:24", "ip_address": null, "subnet_mask": null, "admin_up": true, "link_id": "l_sw_fw" }
+      },
+      "mac_table": [],
+      "arp_cache": [],
+      "security": { "acl": [], "rateLimit": false, "wafDpi": false, "daiGuard": true }
+    },
+    "fw_edge": {
+      "id": "fw_edge",
+      "name": "ASA-EdgeFW",
+      "device_type": "firewall",
+      "x": 520,
+      "y": 210,
+      "interfaces": {
+        "Gi0/0": { "name": "Gi0/0", "mac_address": "00:FW:AA:01:00:01", "ip_address": "10.10.1.1", "subnet_mask": "255.255.255.0", "admin_up": true, "link_id": "l_sw_fw" },
+        "Gi0/1": { "name": "Gi0/1", "mac_address": "00:FW:AA:02:00:01", "ip_address": "172.16.10.1", "subnet_mask": "255.255.255.0", "admin_up": true, "link_id": "l_fw_dmz" },
+        "Gi0/2": { "name": "Gi0/2", "mac_address": "00:FW:AA:03:00:01", "ip_address": "198.51.100.1", "subnet_mask": "255.255.255.0", "admin_up": true, "link_id": "l_fw_atk" }
+      },
+      "static_routes": [
+        { "network": "172.16.10.0", "mask": "255.255.255.0", "next_hop": "172.16.10.1" },
+        { "network": "10.10.1.0", "mask": "255.255.255.0", "next_hop": "10.10.1.1" }
+      ],
+      "arp_cache": [],
+      "security": {
+        "acl": [
+          { "action": "PERMIT", "protocol": "TCP", "src_ip": "ANY", "dst_port": "80" },
+          { "action": "PERMIT", "protocol": "TCP", "src_ip": "ANY", "dst_port": "443" },
+          { "action": "DENY", "protocol": "TCP", "src_ip": "ANY", "dst_port": "22" }
+        ],
+        "rateLimit": true,
+        "wafDpi": true,
+        "daiGuard": false
+      }
+    },
+    "web_dmz": {
+      "id": "web_dmz",
+      "name": "DMZ-WebServer",
+      "device_type": "server",
+      "x": 750,
+      "y": 140,
+      "default_gateway": "172.16.10.1",
+      "interfaces": {
+        "eth0": {
+          "name": "eth0",
+          "mac_address": "00:50:79:BB:10:80",
+          "ip_address": "172.16.10.80",
+          "subnet_mask": "255.255.255.0",
+          "admin_up": true,
+          "link_id": "l_fw_dmz"
+        }
+      },
+      "arp_cache": [],
+      "security": { "acl": [], "rateLimit": false, "wafDpi": false, "daiGuard": false }
+    },
+    "kali_red": {
+      "id": "kali_red",
+      "name": "KaliRedTeam",
+      "device_type": "attacker",
+      "x": 750,
+      "y": 320,
+      "default_gateway": "198.51.100.1",
+      "interfaces": {
+        "eth0": {
+          "name": "eth0",
+          "mac_address": "00:66:66:AA:BB:CC",
+          "ip_address": "198.51.100.66",
+          "subnet_mask": "255.255.255.0",
+          "admin_up": true,
+          "link_id": "l_fw_atk"
+        }
+      },
+      "arp_cache": [],
+      "security": { "acl": [], "rateLimit": false, "wafDpi": false, "daiGuard": false }
+    }
+  },
+  "links": {
+    "l_admin_sw": {
+      "id": "l_admin_sw",
+      "device_a_id": "admin_pc",
+      "interface_a_name": "eth0",
+      "device_b_id": "sw_core",
+      "interface_b_name": "Fa0/1",
+      "is_up": true
+    },
+    "l_fin_sw": {
+      "id": "l_fin_sw",
+      "device_a_id": "finance_pc",
+      "interface_a_name": "eth0",
+      "device_b_id": "sw_core",
+      "interface_b_name": "Fa0/2",
+      "is_up": true
+    },
+    "l_sw_fw": {
+      "id": "l_sw_fw",
+      "device_a_id": "sw_core",
+      "interface_a_name": "Fa0/24",
+      "device_b_id": "fw_edge",
+      "interface_b_name": "Gi0/0",
+      "is_up": true
+    },
+    "l_fw_dmz": {
+      "id": "l_fw_dmz",
+      "device_a_id": "fw_edge",
+      "interface_a_name": "Gi0/1",
+      "device_b_id": "web_dmz",
+      "interface_b_name": "eth0",
+      "is_up": true
+    },
+    "l_fw_atk": {
+      "id": "l_fw_atk",
+      "device_a_id": "fw_edge",
+      "interface_a_name": "Gi0/2",
+      "device_b_id": "kali_red",
+      "interface_b_name": "eth0",
+      "is_up": true
+    }
+  }
+}

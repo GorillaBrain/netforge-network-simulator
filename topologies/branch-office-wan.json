@@ -1,0 +1,148 @@
+{
+  "name": "Branch Office WAN Routing Topology",
+  "description": "Two corporate branch locations (Headquarters & Remote Branch) interconnected via edge routers with static IP routes.",
+  "devices": {
+    "hq_pc": {
+      "id": "hq_pc",
+      "name": "HQ-AdminPC",
+      "device_type": "pc",
+      "x": 100,
+      "y": 180,
+      "default_gateway": "192.168.10.1",
+      "interfaces": {
+        "eth0": {
+          "name": "eth0",
+          "mac_address": "00:50:79:10:00:10",
+          "ip_address": "192.168.10.10",
+          "subnet_mask": "255.255.255.0",
+          "admin_up": true,
+          "link_id": "l_hq_lan"
+        }
+      },
+      "arp_cache": [],
+      "security": { "acl": [], "rateLimit": false, "wafDpi": false, "daiGuard": false }
+    },
+    "hq_sw": {
+      "id": "hq_sw",
+      "name": "HQ-Switch",
+      "device_type": "switch",
+      "x": 250,
+      "y": 180,
+      "interfaces": {
+        "Fa0/1": { "name": "Fa0/1", "mac_address": "00:01:42:10:00:01", "ip_address": null, "subnet_mask": null, "admin_up": true, "link_id": "l_hq_lan" },
+        "Fa0/2": { "name": "Fa0/2", "mac_address": "00:01:42:10:00:02", "ip_address": null, "subnet_mask": null, "admin_up": true, "link_id": "l_hq_uplink" }
+      },
+      "mac_table": [],
+      "arp_cache": [],
+      "security": { "acl": [], "rateLimit": false, "wafDpi": false, "daiGuard": false }
+    },
+    "hq_router": {
+      "id": "hq_router",
+      "name": "HQ-EdgeRouter",
+      "device_type": "router",
+      "x": 400,
+      "y": 240,
+      "interfaces": {
+        "Gi0/0": { "name": "Gi0/0", "mac_address": "00:AA:BB:10:00:01", "ip_address": "192.168.10.1", "subnet_mask": "255.255.255.0", "admin_up": true, "link_id": "l_hq_uplink" },
+        "Gi0/1": { "name": "Gi0/1", "mac_address": "00:AA:BB:10:00:02", "ip_address": "10.0.0.1", "subnet_mask": "255.255.255.252", "admin_up": true, "link_id": "l_wan" }
+      },
+      "static_routes": [
+        { "network": "192.168.20.0", "mask": "255.255.255.0", "next_hop": "10.0.0.2" }
+      ],
+      "arp_cache": [],
+      "security": { "acl": [], "rateLimit": false, "wafDpi": false, "daiGuard": false }
+    },
+    "branch_router": {
+      "id": "branch_router",
+      "name": "Branch-EdgeRouter",
+      "device_type": "router",
+      "x": 580,
+      "y": 240,
+      "interfaces": {
+        "Gi0/0": { "name": "Gi0/0", "mac_address": "00:AA:BB:20:00:01", "ip_address": "10.0.0.2", "subnet_mask": "255.255.255.252", "admin_up": true, "link_id": "l_wan" },
+        "Gi0/1": { "name": "Gi0/1", "mac_address": "00:AA:BB:20:00:02", "ip_address": "192.168.20.1", "subnet_mask": "255.255.255.0", "admin_up": true, "link_id": "l_branch_uplink" }
+      },
+      "static_routes": [
+        { "network": "192.168.10.0", "mask": "255.255.255.0", "next_hop": "10.0.0.1" }
+      ],
+      "arp_cache": [],
+      "security": { "acl": [], "rateLimit": false, "wafDpi": false, "daiGuard": false }
+    },
+    "branch_sw": {
+      "id": "branch_sw",
+      "name": "Branch-Switch",
+      "device_type": "switch",
+      "x": 730,
+      "y": 180,
+      "interfaces": {
+        "Fa0/1": { "name": "Fa0/1", "mac_address": "00:01:42:20:00:01", "ip_address": null, "subnet_mask": null, "admin_up": true, "link_id": "l_branch_uplink" },
+        "Fa0/2": { "name": "Fa0/2", "mac_address": "00:01:42:20:00:02", "ip_address": null, "subnet_mask": null, "admin_up": true, "link_id": "l_branch_server" }
+      },
+      "mac_table": [],
+      "arp_cache": [],
+      "security": { "acl": [], "rateLimit": false, "wafDpi": false, "daiGuard": false }
+    },
+    "branch_server": {
+      "id": "branch_server",
+      "name": "Branch-FileServer",
+      "device_type": "server",
+      "x": 880,
+      "y": 180,
+      "default_gateway": "192.168.20.1",
+      "interfaces": {
+        "eth0": {
+          "name": "eth0",
+          "mac_address": "00:50:79:20:00:50",
+          "ip_address": "192.168.20.50",
+          "subnet_mask": "255.255.255.0",
+          "admin_up": true,
+          "link_id": "l_branch_server"
+        }
+      },
+      "arp_cache": [],
+      "security": { "acl": [], "rateLimit": false, "wafDpi": false, "daiGuard": false }
+    }
+  },
+  "links": {
+    "l_hq_lan": {
+      "id": "l_hq_lan",
+      "device_a_id": "hq_pc",
+      "interface_a_name": "eth0",
+      "device_b_id": "hq_sw",
+      "interface_b_name": "Fa0/1",
+      "is_up": true
+    },
+    "l_hq_uplink": {
+      "id": "l_hq_uplink",
+      "device_a_id": "hq_sw",
+      "interface_a_name": "Fa0/2",
+      "device_b_id": "hq_router",
+      "interface_b_name": "Gi0/0",
+      "is_up": true
+    },
+    "l_wan": {
+      "id": "l_wan",
+      "device_a_id": "hq_router",
+      "interface_a_name": "Gi0/1",
+      "device_b_id": "branch_router",
+      "interface_b_name": "Gi0/0",
+      "is_up": true
+    },
+    "l_branch_uplink": {
+      "id": "l_branch_uplink",
+      "device_a_id": "branch_router",
+      "interface_a_name": "Gi0/1",
+      "device_b_id": "branch_sw",
+      "interface_b_name": "Fa0/1",
+      "is_up": true
+    },
+    "l_branch_server": {
+      "id": "l_branch_server",
+      "device_a_id": "branch_sw",
+      "interface_a_name": "Fa0/2",
+      "device_b_id": "branch_server",
+      "interface_b_name": "eth0",
+      "is_up": true
+    }
+  }
+}
