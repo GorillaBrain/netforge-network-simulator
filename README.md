@@ -1,31 +1,35 @@
-# NetForge — Interactive Network Simulator
+# NetForge: Cyber Defense — Gamified Network & Security Simulator
 
 [![CI / Pytest](https://img.shields.io/badge/pytest-28%20passed-emerald?style=for-the-badge&logo=pytest)](https://github.com/GorillaBrain/netforge-network-simulator)
 [![Deployment: Vercel](https://img.shields.io/badge/Vercel-Live%20Production-success?style=for-the-badge&logo=vercel)](https://netforge-network-simulator.vercel.app)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue?style=for-the-badge)](LICENSE)
-[![Engine: Python 3](https://img.shields.io/badge/Engine-Python%203.13%20%7C%20Pyodide%20Wasm-cyan?style=for-the-badge&logo=python)](https://github.com/GorillaBrain/netforge-network-simulator)
-[![Frontend: React](https://img.shields.io/badge/Frontend-React%20%2B%20Vite-indigo?style=for-the-badge&logo=react)](https://github.com/GorillaBrain/netforge-network-simulator)
+[![Version: v3.0 Cyber Defense](https://img.shields.io/badge/Version-v3.0%20Cyber%20Defense-cyan?style=for-the-badge)](https://netforge-network-simulator.vercel.app)
 
-> **Live Deployment:** [https://netforge-network-simulator.vercel.app](https://netforge-network-simulator.vercel.app)
+> **Live Production Deployment:** [https://netforge-network-simulator.vercel.app](https://netforge-network-simulator.vercel.app)
 > 
-> A polished, interactive, educational network simulator inspired by **Cisco Packet Tracer**. Build virtual network topologies, configure devices, simulate packets step-by-step, inspect protocol headers, troubleshoot connectivity, and learn networking through observable simulation.
+> An interactive, gamified network and cybersecurity simulator inspired by **Cisco Packet Tracer** and modern **Blue-Team SOC SIEMs**. Build virtual network topologies, configure devices, fire simulated cyber attacks, configure firewall ACLs, observe packet travels with flying PDU envelopes, and level up your cybersecurity operator rank.
 
 ---
 
-## 🌟 Product Vision
+## 🌟 Product Capabilities
 
-NetForge is an educational networking laboratory where every packet animation, terminal command output, and routing decision is derived directly from genuine protocol logic and state machines.
+NetForge Cyber Defense combines Cisco networking fundamentals with hands-on Blue-Team cybersecurity operations:
 
-- **Drag-and-Drop Network Workspace:** Place PCs, Laptops, Ethernet Switches, Routers, Servers, and Hubs on a canvas.
-- **Virtual Links & Interface States:** Connect device interfaces with virtual Ethernet cables with link state, delay, and administrative shutdown support.
-- **Layer 2 Ethernet Switching:** Source MAC address learning, forwarding table lookup, unicast forwarding, broadcast flooding, unknown unicast flooding, and same-port filtering.
-- **Address Resolution Protocol (ARP):** Broadcast ARP Requests, unicast ARP Replies, dynamic ARP cache learning, and ARP wait buffering.
-- **Layer 3 IPv4 Routing:** Longest-Prefix-Match (LPM) route lookup, directly connected networks ("C"), static routes ("S"), default routes ("S*"), TTL decrement, and ICMP error generation.
-- **Simulated Cisco CLI:** Interactive terminal supporting EXEC and configuration modes (`ping`, `traceroute`, `show ip`, `show interfaces`, `show arp`, `show mac address-table`, `show ip route`, `conf t`, `ip address`, `shutdown`, `no shutdown`, `ip route`).
-- **Interactive Packet Inspector:** Deep protocol layer inspection (Ethernet, ARP, IPv4, ICMP) with plain-English pedagogical explanations for each hop.
-- **Subnet Calculator & IP Planner:** Bitwise calculations, usable host ranges, binary visualization, RFC 3021 /31 point-to-point links, and same-subnet verification.
-- **5 Guided Networking Labs:** Hands-on labs with starting topologies, tasks, hints, and automated evaluation against live simulator state.
-- **Save & Load:** Export and import topologies as versioned JSON with schema validation.
+- **Iconic Cisco Hardware Canvas:** Authentic vector Cisco Routers (4-way arrows), 2960 Switches, PCs, Laptops, Servers, and Hubs with triangular green/red port link LEDs (▲ / ▼).
+- **Simple PDU (Ping) & Exploit Tools:** Click-to-send ICMP pings and fire simulated Red Team payloads (Nmap SYN scan, SSH brute-force, SQL injection, Botnet DDoS SYN flood, and Gratuitous ARP MITM).
+- **Blue-Team SOC SIEM & Defense:** Live SIEM log feed with severity indicators, Firewall ACL rule builder, Deep Packet Inspection (DPI/WAF), Rate Limiting, and Dynamic ARP Inspection (DAI).
+- **8 Gamified Campaign Missions:**
+  - *M01: First LAN & ARP Discovery* (Beginner)
+  - *M02: Subnet Mask Forensics /25 vs /24* (Beginner)
+  - *M03: Cross-Subnet Router Gateway* (Intermediate)
+  - *M04: Multi-Layer Outage Triage* (Intermediate)
+  - *M05: L2/L3 MAC Re-Encapsulation Trace* (Advanced)
+  - *M06: Operation Iron Gate — Firewall ACL & SSH Defense* (CyberSec)
+  - *M07: Operation Poison Ivy — Defeat ARP Spoofing MITM* (CyberSec)
+  - *M08: Operation Blackout — DDoS SYN Flood & SQLi WAF Defense* (Boss)
+- **Cisco IOS CLI & Desktop Console:** Interactive terminal supporting EXEC and configuration modes, command history, and one-click quick action chips.
+- **Subnet Planning & CIDR Matrix:** Bitwise subnet calculations, usable host ranges, binary visualization, and same-subnet verification.
+- **Operator Rank & Achievement Badges:** Level up from Trainee to Autonomous NetGod with XP toasts, sound effects, and celebratory fanfare.
 
 ---
 
